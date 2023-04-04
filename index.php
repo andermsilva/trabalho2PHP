@@ -20,6 +20,26 @@ if (isset($_GET['enviar'])) {
   if ($_GET['enviar'] == '5') {
     $id = 5;
   }
+  if ($_GET['enviar'] == '6') {
+    $id = 6;
+  }
+}
+$vetor = [];
+$elem = null;
+$msg = "";
+if (isset($_GET['relatar'])) {
+  $id = 6;
+  $elem = $_GET['elementos'];
+
+  for ($i = 0; $i <= $elem; $i++) {
+
+    $vetor[$i] = random_int(1, 100);
+  }
+
+  if ($vetor != null || $vetor != "") {
+
+    $msg = $vetor;
+  }
 }
 
 ?>
@@ -32,7 +52,8 @@ if (isset($_GET['enviar'])) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Trabalho PHP</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous"><link rel="icon" href="php.png" type="image/x-icon" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+  <link rel="icon" href="php.png" type="image/x-icon" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -46,11 +67,12 @@ if (isset($_GET['enviar'])) {
         <ul class='dropdown-menu'>
           <form>
 
-            <li><button class='dropdown-item' name="enviar" type='submit' value="1">Quadrados de 15 a 200</button></li>
-            <li><button class='dropdown-item' name="enviar" type='submit' value="2">Soma dos 100 primeiros número</button></li>
-            <li><button class='dropdown-item' name="enviar" type='submit' value="3">Sequencia Fibonacci </button></li>
-            <li><button class='dropdown-item' name="enviar" type='submit' value="4"> Tabuada </button></li>
-            <li><button class='dropdown-item' name="enviar" type='submit' value="5"> Ordenar Vetor </button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="1">1 Quadrados de 15 a 200</button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="2">2 Soma dos 100 primeiros número</button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="3">3 Sequencia Fibonacci </button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="4">4 Tabuada </button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="5">5 Ordenar Vetor </button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="6">6 Vetor do usuário. </button></li>
           </form>
         </ul>
       </div>
@@ -181,13 +203,12 @@ if (isset($_GET['enviar'])) {
       <div style="display: <?= (5 == $id) ? '' : 'none' ?>" class=" text-center">
         <h5 class="text-secondary border-bottom border-secondary">Ordenar Vetor...</h5>
         <div>
-
           <?php
           $par = 0;
           $impar = 0;
           $nums = [];
-          for ($i = 1; $i < 51; $i++) {
-            $nums[$i] =$i;
+          for ($i = 1; $i <= 50; $i++) {
+            $nums[$i] = $i;
           }
           shuffle($nums);
           echo "<p class='alert alert-secondary text-info-emphasis' >Vetor: [ ";
@@ -199,11 +220,8 @@ if (isset($_GET['enviar'])) {
           echo " ] </p> ";
           $menor = 0;
           for ($j = 0; $j < count($nums); $j++) {
-
             $i = $j + 1;
-
             $k = $j;
-
             while ($i < count($nums)) {
               if ($nums[$i] < $nums[$k]) {
                 $k = $i;
@@ -215,14 +233,14 @@ if (isset($_GET['enviar'])) {
             $nums[$k] = $menor;
           }
           echo "<p class='alert alert-success text-success-emphasis' >Vetor: [ ";
+          $l = 0;
           foreach ($nums as $key => $value) {
-
             if ($value % 2 == 0) {
               $par++;
             } else {
-              $impar++;
+              if (numero_primo($value))
+                $impar++;
             }
-
             echo $value;
             if ($key != count($nums) - 1)
               echo ", ";
@@ -230,11 +248,77 @@ if (isset($_GET['enviar'])) {
           echo " ] </p>";
           echo " <p class='alert alert-info text-info-emphasis' >";
           echo "  $par numeros pares e $impar números ímpares      </p>";
-
           ?>
 
         </div>
       </div>
+      <div style="display: <?= (6 == $id) ? '' : 'none' ?>" class=" text-center">
+        <h5 class="text-secondary border-bottom border-primary">Vetor do usuário.</h5>
+
+        <div class="flex-container">
+          <div class="item-form border rounded border-primary">
+            <?php
+            $soma = 0;
+            $media = 0;
+            $maior = 0;
+            $menor = 0;
+            $pMaior = 0;
+            $pMenor = 0;
+            $result = null;
+            if ($vetor) {
+              $result .= "<p class='alert alert-success'> Vetor:";
+              foreach ($vetor as $key => $value) {
+                $result .= " [$key] => $value";
+                if ($key != count($vetor) - 1) {
+                  $result .= " => ";
+                }
+                if ($key == 0) {
+                  $maior = $value;
+                  $menor = $value;
+                } else {
+                  if ($value > $maior) {
+                    $maior = $value;
+                    $pMaior = $key;
+                  } else {
+                    if ($value < $menor) {
+                      $menor = $value;
+                      $pMenor = $key;
+                    }
+                  }
+                }
+                $soma += $value;
+              }
+              $media = $soma / count($vetor);
+            }
+            if ($media > 0) {
+              $result .= "</p>";
+
+              $result .= "<p class='alert alert-warning'>";
+              $result .= "Média: " . number_format($media, 2, ',', '.') . "<br />";
+              $result .= "Menor: [$pMenor] => " . $menor . " e ";
+              $result .= "Maior:[$pMaior] => " . $maior;
+              $result .= "</p>";
+            }
+            ?>
+
+            <form>
+              <label for="elementos" class="form-label text-info fw-bold">Elementos...</label><br />
+
+              <div class="input-group mb-3">
+                <input type="text" class="form-control s-3 text-end" name="elementos" id="elementos" aria-describedby="emailHelp">
+                <button type="submit" name="relatar" class="btn btn-primary">+</button>
+              </div>
+            </form><br />
+
+
+          </div>
+          <div class="result_vetor">
+
+            <?php
+            echo $result;
+            ?>
+          </div>
+        </div>
     </section>
 
   </main>

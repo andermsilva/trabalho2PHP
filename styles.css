@@ -51,11 +51,7 @@ html{
      flex-flow: row wrap;
      justify-content: flex-start;
      padding: 12px;  
-    width: 80%;
-    
-
-
-    width: 98%;
+     width: 98%;
     aspect-ratio: 3/1;
     height:300px ;
 
@@ -73,9 +69,21 @@ html{
     width: 120px;
     margin-left: 44px;
     margin-bottom: 15px;
-   
-    
-   
-
-    
  }
+
+ .item-form{
+    
+    width: 90%;
+    height: 100px;
+    padding: 8px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+   
+    margin-bottom: 15px;
+}
+
+.result_vetor{
+    margin-left: auto;
+    margin-right: auto;
+}
