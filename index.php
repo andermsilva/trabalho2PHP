@@ -7,7 +7,7 @@ $palavra = "";
 $result_sub = null;
 
 if (isset($_GET['enviar'])) {
-  
+
 
   if ($_GET['enviar'] == '1') {
     $id = 1;
@@ -51,20 +51,20 @@ if (isset($_GET['relatar'])) {
 }
 
 
-if (isset($_GET['buscar'] )) {
+if (isset($_GET['buscar'])) {
   $id = 7;
-  
-  $vetLetras =[];
-  $vetPalavras =[];
+
+  $vetLetras = [];
+  $vetPalavras = [];
   $texto = $_GET['texto'];
   $palavra = $_GET['palavra'];
 
-$vetPalavras = str_split($palavra);
-$vetLetras = str_split($texto);
-$i = 0;
+  $vetPalavras = str_split($palavra);
+  $vetLetras = str_split($texto);
+  $i = 0;
   foreach ($vetLetras as $key => $value) {
     # code...
-    if($value != " "){
+    if ($value != " ") {
 
       $vetLetras[$i] = $value;
       $i++;
@@ -73,14 +73,20 @@ $i = 0;
   $nLetras = $i;
   $result_sub = "";
   $pos = strripos($texto, $palavra);
-  $result_sub .= "Encontramos a palavra \"";
-  $result_sub .= substr($texto,$pos,strlen($palavra))."\"<br />";
-  $result_sub .="Com inicio na posição ".$pos." termina na posição".(strlen($palavra)+$pos-1)."<br />";
-  $result_sub.=" O texto tem $nLetras Letras";
 
-  echo $nLetras;
-  
-  //print_r($vetLetras);
+  $encontrada = substr($texto, $pos, strlen($palavra));
+  $vetPalavras = explode(" ",$texto);
+  $result_sub .= "<p class='alert alert-warning mt-4'>";
+  if ($encontrada != $palavra) {
+    $result_sub .= "Não encontramos a palavra: \"" . $palavra . "\"<br />";
+  } elseif ($encontrada != "") {
+    $result_sub .= "Encontramos a palavra: \"" . $palavra . "\"<br />";
+    $result_sub .= "Com inicio na posição " . $pos . " e termina na posição" . (strlen($palavra) + $pos - 1) . "<br />";
+  }
+
+  //$result_sub .= substr($texto,$pos,(strlen($palavra)))."\"<br />";
+  $result_sub .= " O texto tem $nLetras Letras e ".count($vetPalavras)." palavras </p>";
+ 
 }
 ?>
 
@@ -104,8 +110,8 @@ $i = 0;
         <button class='btn btn-secondary dropdown-toggle posBtn' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
           Exercícios
         </button>
-        <ul class='dropdown-menu'>
-          <form>
+        <ul class='dropdown-menu '>
+          <form class="">
 
             <li><button class='dropdown-item' name="enviar" type='submit' value="1">1 Quadrados de 15 a 200</button></li>
             <li><button class='dropdown-item' name="enviar" type='submit' value="2">2 Soma dos 100 primeiros número</button></li>
@@ -119,7 +125,7 @@ $i = 0;
       </div>
 
     </header>
-    <h1 class="text-center text-danger">Trabalho 2 PHP <img src="icons8-php-logo-1200.svg" /></h1>
+    <h1 class="text-center text-primary">Trabalho 2 PHP <img src="icons8-php-logo-1200.svg" /></h1>
     <section class="ex border border-dark-subtle rounded-2">
 
       <div style="display: <?= (1 == $id) ? '' : 'none' ?> " class="border border-primary-subte text-center p-2 rounded">
@@ -305,8 +311,8 @@ $i = 0;
             if ($vetor) {
               $result .= "<p class='alert alert-success'> Vetor:";
               foreach ($vetor as $key => $value) {
-                   # code...
-                
+                # code...
+
                 $result .= " [$key] => $value";
                 if ($key != count($vetor) - 1) {
                   $result .= " => ";
@@ -364,20 +370,19 @@ $i = 0;
 
       </div>
       <div style="display: <?= (7 == $id) ? '' : 'none' ?> " class="border border-primary-subte text-center p-2 rounded">
-        <h5 class="text-info  border-bottom border-info-emphasis">Buscar palavra</h5>
+        <h5 class="text-info  border-bottom border-info">Buscar palavra</h5>
         <div>
           <form>
             <div class="mb-3">
-              <label for="texto" class="form-label">
+              <label for="texto" class="form-label text-secondary fw-bold">
                 Texto
               </label>
-              <input type="text" class="form-control text-center"
-               name="texto" value="<?=$texto?>" id="texto" aria-describedby="emailHelp">
+              <input type="text" class="form-control text-center" name="texto" value="<?= $texto ?>" id="texto" aria-describedby="emailHelp">
 
             </div>
             <div class="mb-3">
-              <label for="palavra" class="form-label">
-                palavra
+              <label for="palavra" class="form-label text-secondary fw-bold">
+                Buscar palavra
               </label>
               <input type="text" class="form-control" name="palavra" id="palavra" aria-describedby="emailHelp">
 
@@ -385,9 +390,9 @@ $i = 0;
 
             <button type="submit" name="buscar" value="7" class="btn btn-primary">Buscar</button>
           </form>
-            <?php 
-             echo $result_sub;
-            ?>
+          <?php
+          echo $result_sub;
+          ?>
 
         </div>
       </div>
