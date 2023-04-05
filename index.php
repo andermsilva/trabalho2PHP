@@ -2,8 +2,12 @@
 include('utilitarios.php');
 $display = null;
 $id = null;
-if (isset($_GET['enviar'])) {
+$texto = "";
+$palavra = "";
+$result_sub = null;
 
+if (isset($_GET['enviar'])) {
+  
 
   if ($_GET['enviar'] == '1') {
     $id = 1;
@@ -23,6 +27,10 @@ if (isset($_GET['enviar'])) {
   if ($_GET['enviar'] == '6') {
     $id = 6;
   }
+
+  if ($_GET['enviar'] == '7') {
+    $id = 7;
+  }
 }
 $vetor = [];
 $elem = null;
@@ -31,7 +39,7 @@ if (isset($_GET['relatar'])) {
   $id = 6;
   $elem = $_GET['elementos'];
 
-  for ($i = 0; $i <= $elem; $i++) {
+  for ($i = 0; $i < $elem; $i++) {
 
     $vetor[$i] = random_int(1, 100);
   }
@@ -42,6 +50,38 @@ if (isset($_GET['relatar'])) {
   }
 }
 
+
+if (isset($_GET['buscar'] )) {
+  $id = 7;
+  
+  $vetLetras =[];
+  $vetPalavras =[];
+  $texto = $_GET['texto'];
+  $palavra = $_GET['palavra'];
+
+$vetPalavras = str_split($palavra);
+$vetLetras = str_split($texto);
+$i = 0;
+  foreach ($vetLetras as $key => $value) {
+    # code...
+    if($value != " "){
+
+      $vetLetras[$i] = $value;
+      $i++;
+    }
+  }
+  $nLetras = $i;
+  $result_sub = "";
+  $pos = strripos($texto, $palavra);
+  $result_sub .= "Encontramos a palavra \"";
+  $result_sub .= substr($texto,$pos,strlen($palavra))."\"<br />";
+  $result_sub .="Com inicio na posição ".$pos." termina na posição".(strlen($palavra)+$pos-1)."<br />";
+  $result_sub.=" O texto tem $nLetras Letras";
+
+  echo $nLetras;
+  
+  //print_r($vetLetras);
+}
 ?>
 
 
@@ -73,6 +113,7 @@ if (isset($_GET['relatar'])) {
             <li><button class='dropdown-item' name="enviar" type='submit' value="4">4 Tabuada </button></li>
             <li><button class='dropdown-item' name="enviar" type='submit' value="5">5 Ordenar Vetor </button></li>
             <li><button class='dropdown-item' name="enviar" type='submit' value="6">6 Vetor do usuário. </button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="7">7 Pesquisar palavra. </button></li>
           </form>
         </ul>
       </div>
@@ -84,7 +125,6 @@ if (isset($_GET['relatar'])) {
       <div style="display: <?= (1 == $id) ? '' : 'none' ?> " class="border border-primary-subte text-center p-2 rounded">
         <h5 class="text-info  border-bottom border-info">Quadrados de 15 a 200</h5>
         <div id="div1">
-
           <?php
           $count = 15;
           $i = 0;
@@ -95,8 +135,6 @@ if (isset($_GET['relatar'])) {
             if ($i < 5) {
               echo ", ";
             }
-
-
             if ($i % 5 == 0) {
               $i = 0;
               echo "<br />";
@@ -104,7 +142,6 @@ if (isset($_GET['relatar'])) {
             $count++;
           }
           echo "</p>";
-
           ?>
         </div>
 
@@ -247,7 +284,7 @@ if (isset($_GET['relatar'])) {
           }
           echo " ] </p>";
           echo " <p class='alert alert-info text-info-emphasis' >";
-          echo "  $par numeros pares e $impar números ímpares      </p>";
+          echo "  $par numeros pares e $impar números primos      </p>";
           ?>
 
         </div>
@@ -268,6 +305,8 @@ if (isset($_GET['relatar'])) {
             if ($vetor) {
               $result .= "<p class='alert alert-success'> Vetor:";
               foreach ($vetor as $key => $value) {
+                   # code...
+                
                 $result .= " [$key] => $value";
                 if ($key != count($vetor) - 1) {
                   $result .= " => ";
@@ -319,6 +358,39 @@ if (isset($_GET['relatar'])) {
             ?>
           </div>
         </div>
+
+
+
+
+      </div>
+      <div style="display: <?= (7 == $id) ? '' : 'none' ?> " class="border border-primary-subte text-center p-2 rounded">
+        <h5 class="text-info  border-bottom border-info-emphasis">Buscar palavra</h5>
+        <div>
+          <form>
+            <div class="mb-3">
+              <label for="texto" class="form-label">
+                Texto
+              </label>
+              <input type="text" class="form-control text-center"
+               name="texto" value="<?=$texto?>" id="texto" aria-describedby="emailHelp">
+
+            </div>
+            <div class="mb-3">
+              <label for="palavra" class="form-label">
+                palavra
+              </label>
+              <input type="text" class="form-control" name="palavra" id="palavra" aria-describedby="emailHelp">
+
+            </div>
+
+            <button type="submit" name="buscar" value="7" class="btn btn-primary">Buscar</button>
+          </form>
+            <?php 
+             echo $result_sub;
+            ?>
+
+        </div>
+      </div>
     </section>
 
   </main>
