@@ -5,6 +5,9 @@ $id = null;
 $texto = "";
 $palavra = "";
 $result_sub = null;
+$flag = null;
+
+
 
 if (isset($_GET['enviar'])) {
 
@@ -30,6 +33,34 @@ if (isset($_GET['enviar'])) {
 
   if ($_GET['enviar'] == '7') {
     $id = 7;
+  }
+  $sort = null;
+  if ($_GET['enviar'] == '8') {
+    $flag =true;
+    $apostas = array();
+
+
+    for ($i = 0; $i < 10; $i++) {
+      $apostas[] = aposta(6, 60);
+    }
+    // print_r($apostas);
+    $myfile = fopen("newFile.txt", "w") or die("---");
+    $linha = "";
+    foreach ($apostas as $key => $jogo) {
+      foreach ($jogo as $k => $value) {
+        $linha .= $value;
+        if ($k != 5)
+          $linha .= ",";
+      }
+
+      if ($key != 9)
+        $linha .= "|";
+    }
+    fwrite($myfile, $linha);
+
+    fclose($myfile);
+
+    $id = 8;
   }
 }
 $vetor = [];
@@ -75,19 +106,31 @@ if (isset($_GET['buscar'])) {
   $pos = strripos($texto, $palavra);
 
   $encontrada = substr($texto, $pos, strlen($palavra));
-  $vetPalavras = explode(" ",$texto);
+  $vetPalavras = explode(" ", $texto);
   $result_sub .= "<p class='alert alert-warning mt-4'>";
   if ($encontrada != $palavra) {
     $result_sub .= "Não encontramos a palavra: \"" . $palavra . "\"<br />";
   } elseif ($encontrada != "") {
     $result_sub .= "Encontramos a palavra: \"" . $palavra . "\"<br />";
-    $result_sub .= "Com inicio na posição " . $pos . " e termina na posição" . (strlen($palavra) + $pos - 1) . "<br />";
+    $result_sub .= "Com inicio na posição " . $pos . " e termina na posição " . (strlen($palavra) + $pos - 1) . "<br />";
   }
 
-  //$result_sub .= substr($texto,$pos,(strlen($palavra)))."\"<br />";
-  $result_sub .= " O texto tem $nLetras Letras e ".count($vetPalavras)." palavras </p>";
- 
+  $result_sub .= " O texto tem $nLetras Letras e " . count($vetPalavras) . " palavras </p>";
 }
+if (isset($_GET['sorteio'])) {
+  $flag = true;
+  $id = 8;
+  if ($_GET['sorteio'] == "8s") {
+        
+    $sort = true;
+  }else{
+    $flag = true;
+    
+    $sort = false;
+  }
+  
+}
+
 ?>
 
 
@@ -120,6 +163,7 @@ if (isset($_GET['buscar'])) {
             <li><button class='dropdown-item' name="enviar" type='submit' value="5">5 Ordenar Vetor </button></li>
             <li><button class='dropdown-item' name="enviar" type='submit' value="6">6 Vetor do usuário. </button></li>
             <li><button class='dropdown-item' name="enviar" type='submit' value="7">7 Pesquisar palavra. </button></li>
+            <li><button class='dropdown-item' name="enviar" type='submit' value="8">8 Jogo. </button></li>
           </form>
         </ul>
       </div>
@@ -183,11 +227,10 @@ if (isset($_GET['buscar'])) {
         $result = 0;
         $count = 0;
 
-
-        for ($j = 0; $j <= 20; $j++) {
+        for ($j = 0; $j <= 25; $j++) {
 
           if ($j == 0) {
-            echo "0 ";
+            echo "0, ";
           }
 
           if ($j == 1) {
@@ -199,7 +242,7 @@ if (isset($_GET['buscar'])) {
 
             $result = $prox + $anterior;
             echo $result;
-            if ($j != 20) {
+            if ($j != 25) {
               echo ", ";
             } else {
               echo " . . .";
@@ -242,7 +285,6 @@ if (isset($_GET['buscar'])) {
           ?>
         </div>
       </div>
-
       <div style="display: <?= (5 == $id) ? '' : 'none' ?>" class=" text-center">
         <h5 class="text-secondary border-bottom border-secondary">Ordenar Vetor...</h5>
         <div>
@@ -396,10 +438,122 @@ if (isset($_GET['buscar'])) {
 
         </div>
       </div>
+      <div style="display: <?= (8 == $id) ? '' : 'none' ?> " class="border border-primary-subte text-center p-2 rounded">
+        <h5 class="text-info  border-bottom border-info">Jogo</h5>
+        <form>
+          <button type="submit" name="sorteio" value="8s" class="btn btn-primary">Sorteio</button>
+         <a href="index.php?enviar=8"> <button type="button" name="sorteio" value="8r" class="btn btn-secondary">Reset</button></a>
+          <br /><br />
+            <?php
+            if ($sort) {
+              ?>
+          <p class="text-success alert alert-success fw-bold">
+            <?php 
+             $sorteio = array();
+              $sorteio = aposta(6, 60);
+              foreach ($sorteio as $key => $value) {
+                echo $value;
+                if ($key != 5)
+                  echo " - ";
+              }
+              }else{
+                $sorteio = array();
+              }
+
+           echo" </p>";
+          ?>
+          <div>
+
+            <?php
+            if ($flag) {
+              $vet_apostas = array();
+              $vet_aposta = array();
+
+              $myfile = fopen("newFile.txt", "r") or die("??");
+
+              $i = 0;
+              while (!feof($myfile)) {
+
+                $vet_apostas = explode("|", fgets($myfile));
+              }
+
+              fclose($myfile);
+
+              foreach ($vet_apostas as $key => $value) {
+                $vet_aposta[] = explode(",", $value);
+              }
+            }
+            // print_r($vet_aposta);
+            ?>
+
+        </form>
+        <table class="table table-info table-striped-columns">
+          <thead>
+            <tr >
+              <th  class="text-primary" scope="col">Concurso</th>
+              <th  class="text-primary" scope="col">Dezenas jogadas</th>
+              <th  class="text-primary" scope="col">Acertos</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tbody>
+            <?php
+            foreach ($vet_aposta as $key => $value) {
+              $count = 0;
+            ?>
+              <tr  class="text-secondary">
+                <th scope="row"><?= $key + 1 ?></th>
+                <td  class="text-secondary">
+                  <?php
+                  foreach ($value as $key => $jap) {
+
+                   if($sort){
+                      foreach ($sorteio as $i => $vl) {
+                        if ($jap == $vl) {
+                          $count++;
+                          $jap = "<span class=' fw-bold text-success'>$jap</span>";
+                          
+                        }
+                      }
+                    }
+                      echo $jap;
+                   
+                  
+                    if ($key != 5)
+                      echo " - ";
+
+                  ?>
+                  <?php
+                  }
+                  ?>
+                </td>
+                <td  class="text-secondary fw-bold text-success">
+                  <?php
+                  echo $count;
+                  ?>
+                </td>
+
+              </tr>
+            <?php
+            }
+            ?>
+            </tr>
+        </table>
+
+      </div>
+      </div>
+
     </section>
 
   </main>
-
+  <br />
+  <footer class="text-center text-white">
+    <p> </p>
+    <p><a class="text-white" href="#">Back to top</a></p>
+    <p><a class="text-white" href="https://github.com/andermsilva" target="_blank">Desenvolvido por: Anderson Marques</a></p>
+    <p>Copyright  © FATEC Presidente Prudente <?= date('Y'); ?> · <a class="text-white" href="#">Privacidade de Dados</a> · <a class="text-white" href="#">Termos de Uso</a></p>
+    <p> </p>
+  </footer>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
 
